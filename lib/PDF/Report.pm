@@ -1,28 +1,27 @@
-###############################################################################
-# This is a wrapper for Alfred Reibenschuh's PDF::API2
-# Defines methods to create PDF reports
-# By: Andy Orr
-# Date: 06/17/2009
-# Version: 1.33
-###############################################################################
-
 package PDF::Report;
-
-$VERSION = "1.33"; 
-
-=head1 PDF::Report 
+use strict;
 
 =head1 NAME
 
 PDF::Report - A wrapper written for PDF::API2
 
 =head1 SYNOPSIS
-	
+
 	use PDF::Report;
 
-        my $pdf = new PDF::Report(%opts);
+    my $pdf = new PDF::Report(%opts);
+
+=head1 DESCRIPTION
+
+This is a wrapper for Alfred Reibenschuh's PDF::API2
+Defines methods to create PDF reports
+
+=head1 VERSION
+ 1.34
 
 =cut
+
+our $VERSION = "1.34";
 
 use strict;
 use PDF::API2;
@@ -53,7 +52,7 @@ my @parameterlist=qw(
 );
 ### END GLOBALS ###############################################################
 
-### GLOBAL SUBS ############################################################### 
+### GLOBAL SUBS ###############################################################
 
 =head1 METHODS
 
@@ -61,24 +60,24 @@ my @parameterlist=qw(
 
 =item my $pdf = new PDF::Report(%opts);
 
-	Creates a new pdf report object.  
-        If no %opts are specified the module 
+	Creates a new pdf report object.
+        If no %opts are specified the module
         will use the factory defaults.
 
 B<Example:>
 
-	my $pdf = new PDF::Report(PageSize => "letter", 
+	my $pdf = new PDF::Report(PageSize => "letter",
                                   PageOrientation => "Landscape");
 
         my $pdf = new PDF::Report(File => $file);
 
 %opts:
-	
+
         PageSize - '4A', '2A', 'A0', 'A1', 'A2',
-                   'A3', 'A4', 'A5', 'A6', '4B', 
-                   '2B', 'B0', 'B1', 'B2', 'B3', 
-                   'B4', 'B5', 'B6', 'LETTER', 
-                   'BROADSHEET', 'LEDGER', 'TABLOID', 
+                   'A3', 'A4', 'A5', 'A6', '4B',
+                   '2B', 'B0', 'B1', 'B2', 'B3',
+                   'B4', 'B5', 'B6', 'LETTER',
+                   'BROADSHEET', 'LEDGER', 'TABLOID',
                    'LEGAL', 'EXECUTIVE', '36X36'
 
 	PageOrientation - 'Portrait', 'Landscape'
@@ -95,7 +94,7 @@ sub new {
       $DEFAULTS{$dflt} = $defaults{$dflt}; # Overridden from user
     }
   }
-  
+
   my $pageWidth;
   my $pageHeight;
   my $x1;
@@ -157,11 +156,11 @@ sub new {
             };
 
   if (defined $defaults{File} && length($defaults{File})) {
-    $self->{pdf} = PDF::API2->open($defaults{File}) 
+    $self->{pdf} = PDF::API2->open($defaults{File})
                      or die "$defaults{File} not found: $!\n";
   } else {
     $self->{pdf} = PDF::API2->new();
-  } 
+  }
 
   # Default fonts
   $self->{font} = $self->{pdf}->corefont('Helvetica'); # Default font object
@@ -194,7 +193,7 @@ sub newpage {
   # Handle the page numbering if this page is to be numbered
   my $total = $self->pages;
   push(@{$self->{no_page_num}}, $no_page_number);
-    
+
   $self->{page_nbr}++;
   return(0);
 }
@@ -224,7 +223,7 @@ sub importpage {
   my $sourceindex = shift;
   my $targetindex = shift;  # can be a page object
 
-#  my $source = $self->{pdf}->open($sourcepdf); 
+#  my $source = $self->{pdf}->open($sourcepdf);
 
   $self->{page} = $self->{pdf}->importpage($sourcepdf, $sourceindex,
                                            $targetindex);
@@ -235,7 +234,7 @@ sub clonepage {
   my $sourceindex = shift;
   my $targetindex = shift;
 
-  $self->{page} = $self->{pdf}->clonepage($sourceindex, $targetindex); 
+  $self->{page} = $self->{pdf}->clonepage($sourceindex, $targetindex);
 
 }
 
@@ -248,13 +247,13 @@ in "new".
 
 sub getPageDimensions {
   my $self = shift;
- 
+
    return($self->{PageWidth}, $self->{PageHeight});
 }
 
 =item $pdf->addRawText($text, $x, $y, $color, $underline, $indent, $rotate);
 
-Add $text at position $x, $y with $color, $underline, $indent and/or $rotate. 
+Add $text at position $x, $y with $color, $underline, $indent and/or $rotate.
 
 =cut
 
@@ -269,7 +268,7 @@ sub addRawText {
   my $txt = $self->{page}->text;
 #  $txt->font($self->{font}, $self->{size});
 #  $txt->transform_rel(-translate => [$x, $y], -rotate => $rotate);
-#  $txt->text($text, -color=>[$color], -underline=>$underline, 
+#  $txt->text($text, -color=>[$color], -underline=>$underline,
 #                          -indent=>$indent);
 
   $txt->textlabel($x, $y, $self->{font}, $self->{size}, $text,
@@ -280,12 +279,12 @@ sub addRawText {
 
 =pod
 
-PDF::API2 Removes all space between every word in the string you pass 
-and then rejoins each word with one space.  If you want to use a string with 
-more than one space between words for formatting purposes, you can either use 
+PDF::API2 Removes all space between every word in the string you pass
+and then rejoins each word with one space.  If you want to use a string with
+more than one space between words for formatting purposes, you can either use
 the hack below or change PDF::API2 (that's what I did ;).  The code below may
-or may not work according to what font you are using.  I used 2 \xA0 per space 
-because that worked for the Helvetica font I was using. 
+or may not work according to what font you are using.  I used 2 \xA0 per space
+because that worked for the Helvetica font I was using.
 
 B<To use a fixed width string with more than one space between words, you can do something like:>
 
@@ -300,7 +299,7 @@ B<To use a fixed width string with more than one space between words, you can do
         } else {
           $new.=$nbsp . $nbsp;
         }
-      } 
+      }
       chop($new);
       return $new;
     }
@@ -357,7 +356,7 @@ sub getAlign {
   return($self->{align});
 }
 
-=item $newtext = $pdf->wrapText($text, $width); 
+=item $newtext = $pdf->wrapText($text, $width);
 
 This is a helper function called by addText, which can be called by itself.
 wrapText() wraps $text within $width.
@@ -398,12 +397,12 @@ sub wrapText {
   return $newText;
 }
 
-=item $pdf->addText($text, $hPos, $textWidth, $textHeight); 
+=item $pdf->addText($text, $hPos, $textWidth, $textHeight);
 
-Takes $text and prints it to the current page at $hPos.  You may just want 
-to pass this function $text if the text is "pre-wrapped" and setAddTextPos 
-has been called previously.  Pass a $hPos to change the position the text 
-will be printed on the page.  Pass a  $textWidth and addText will wrap the 
+Takes $text and prints it to the current page at $hPos.  You may just want
+to pass this function $text if the text is "pre-wrapped" and setAddTextPos
+has been called previously.  Pass a $hPos to change the position the text
+will be printed on the page.  Pass a  $textWidth and addText will wrap the
 text for you.  $textHeight controls the row height.
 
 =cut
@@ -494,7 +493,7 @@ sub addText {
 
 =item $pdf->addParagraph($text, $hPos, $vPos, $width, $height, $indent, $lead);
 
-Add $text at ($hPos, $vPos) within $width and $height, with $indent.  
+Add $text at ($hPos, $vPos) within $width and $height, with $indent.
 $indent is the number of spaces at the beginning of the first line.
 
 =cut
@@ -505,7 +504,7 @@ sub addParagraph {
   my $txt = $self->{page}->text;
   $txt->font($self->{font}, $self->{size});
 
-#  $txt->paragraph($text, -x => $hPos, -y => $vPos, -w => $width, 
+#  $txt->paragraph($text, -x => $hPos, -y => $vPos, -w => $width,
 #                  -h => $height, -flindent => $indent, -lead => $lead, -rel => 1);
 
 #  0.40.x
@@ -523,9 +522,9 @@ sub addParagragh {
   $self->addParagraph($text, $hPos, $vPos, $width, $height, $indent, $lead);
 }
 
-=item $pdf->centerString($a, $b, $yPos, $text); 
+=item $pdf->centerString($a, $b, $yPos, $text);
 
-Centers $text between points $a and $b at position $yPos.  Be careful how much 
+Centers $text between points $a and $b at position $yPos.  Be careful how much
 text you try to jam between those points, this function shrinks the text till
 it fits!
 
@@ -537,12 +536,12 @@ sub centerString {  ### CENTERS STRING BETWEEN TWO POINTS
   my $PointEnd = shift;
   my $YPos = shift;
   my $String = shift;
- 
+
   my $OldTextSize = $self->getSize;
   my $TextSize = $OldTextSize;
 
   my $Area = $PointEnd - $PointBegin;
- 
+
   my $StringWidth;
   while (($StringWidth = $self->getStringWidth($String)) > $Area) {
     $self->setSize(--$TextSize);  ### DECREASE THE FONTSIZE TO MAKE IT FIT
@@ -551,7 +550,7 @@ sub centerString {  ### CENTERS STRING BETWEEN TWO POINTS
   my $Offset = ($Area - $StringWidth) / 2;
   $self->addRawText("$String",$PointBegin+$Offset,$YPos);
   $self->setSize($OldTextSize);
-} 
+}
 
 sub setRowHeight {
   my $self = shift;
@@ -560,14 +559,14 @@ sub setRowHeight {
   return (int($size * 1.20));
 }
 
-=item $pdf->getStringWidth($String); 
+=item $pdf->getStringWidth($String);
 
-Returns the width of $String according to the current font and fontsize being 
+Returns the width of $String according to the current font and fontsize being
 used.
 
 =cut
 
-# replaces silly $pdf->{pdf}->calcTextWidth calls    
+# replaces silly $pdf->{pdf}->calcTextWidth calls
 sub getStringWidth {
   my $self = shift;
   my $String = shift;
@@ -577,7 +576,7 @@ sub getStringWidth {
   return $txt->advancewidth($String);
 }
 
-=item $pdf->addImg($file, $x, $y); 
+=item $pdf->addImg($file, $x, $y);
 
 Add image $file to the current page at position ($x, $y).
 
@@ -589,7 +588,7 @@ sub addImg {
   $self->addImgScaled($file, $x, $y, 1);
 }
 
-=item $pdf->addImgScaled($file, $x, $y, $scale); 
+=item $pdf->addImgScaled($file, $x, $y, $scale);
 
 Add image $file to the current page at position ($x, $y) scaled to $scale.
 
@@ -598,14 +597,14 @@ Add image $file to the current page at position ($x, $y) scaled to $scale.
 sub addImgScaled {
   my ( $self, $file, $x, $y, $scale ) = @_;
 
-  my %type = (jpeg => "jpeg", 
+  my %type = (jpeg => "jpeg",
               jpg  => "jpeg",
               tif  => "tiff",
               tiff => "tiff",
               pnm  => "pnm",
               gif  => "gif",
               png  => "png",
-  ); 
+  );
 
   $file =~ /\.(\w+)$/;
   my $ext = $1;
@@ -641,9 +640,9 @@ sub getGfxLineWidth {
   return $self->{linewidth};
 }
 
-=item $pdf->drawLine($x1, $y1, $x2, $y2); 
+=item $pdf->drawLine($x1, $y1, $x2, $y2);
 
-Draw a line on the current page starting at ($x1, $y1) and ending 
+Draw a line on the current page starting at ($x1, $y1) and ending
 at ($x2, $y2).
 
 =cut
@@ -658,14 +657,14 @@ sub drawLine {
   $gfx->stroke;
 }
 
-=item $pdf->drawRect($x1, $y1, $x2, $y2); 
+=item $pdf->drawRect($x1, $y1, $x2, $y2);
 
 Draw a rectangle on the current page.  Top left corner is represented by
 ($x1, $y1) and the bottom right corner is ($x2, $y2).
 
 =cut
 
-sub drawRect { 
+sub drawRect {
   my ( $self, $x1, $y1, $x2, $y2 ) = @_;
 
   my $gfx = $self->{page}->gfx;
@@ -676,7 +675,7 @@ sub drawRect {
 
 =item $pdf->shadeRect($x1, $y1, $x2, $y2, $color);
 
-Shade a rectangle with $color.  Top left corner is ($x1, $y1) and the bottom 
+Shade a rectangle with $color.  Top left corner is ($x1, $y1) and the bottom
 right corner is ($x2, $y2).
 
 =cut
@@ -729,7 +728,7 @@ and additionally the hsv-hex-notation:
 
 =cut
 
-sub shadeRect {  
+sub shadeRect {
   my ( $self, $x1, $y1, $x2, $y2, $color ) = @_;
 
   my $gfx = $self->{page}->gfx;
@@ -742,9 +741,9 @@ sub shadeRect {
 =item $pdf->drawPieGraph($x, $y, $size, $rData, $rLabels);
 
 Method to create a piegraph using a reference to an array of values.
-It also takes a reference to an array for labels for each data value.  A 
+It also takes a reference to an array for labels for each data value.  A
 legend with all the colors and labels will appear if $rLabels is passed. $x and
-$y are the coordinates for the center of the pie and $size is the radius.  
+$y are the coordinates for the center of the pie and $size is the radius.
 
 =cut
 
@@ -756,7 +755,7 @@ sub drawPieGraph {
   my $rData = shift;
   my $rLabels = shift;
 
-  my $circ = 360;  
+  my $circ = 360;
   my $a = 0;
   my $b = 0;
   my @colors = &getcolors();
@@ -766,7 +765,7 @@ sub drawPieGraph {
   # Set up the colors we'll use
   my @clr;
   foreach my $elem ( 0 .. $#$rData ) {
-#    push(@clr, $colors[int(rand($#colors))]);  
+#    push(@clr, $colors[int(rand($#colors))]);
      push(@clr, $colors[$elem]);
   }
 
@@ -778,7 +777,7 @@ sub drawPieGraph {
   # Get the percentages
   my @perc;
   foreach my $elem ( 0 .. $#$rData ) {
-    $perc[$elem] = $rData->[$elem] / $total; 
+    $perc[$elem] = $rData->[$elem] / $total;
   }
 
   # Draw a pie
@@ -801,80 +800,80 @@ sub drawPieGraph {
     $self->setSize($fontsize);
     my $colorblocksize = 10;
     my $maxsize = 0;
-    for (0 .. $#$rLabels) { 
-      $maxsize = $self->getStringWidth($rLabels->[$_]) 
-                   if $self->getStringWidth($rLabels->[$_]) > $maxsize; 
+    for (0 .. $#$rLabels) {
+      $maxsize = $self->getStringWidth($rLabels->[$_])
+                   if $self->getStringWidth($rLabels->[$_]) > $maxsize;
     }
     my $top = $y + ((($#perc + 1) * $fontsize) / 2);
     my $left = $x + $size + 8;
     $self->drawRect($left, $top,
-                    $x + $size + 8 + $colorblocksize + $maxsize + 3, 
-                    $y - ((($#perc + 1) * $fontsize) / 2)); 
+                    $x + $size + 8 + $colorblocksize + $maxsize + 3,
+                    $y - ((($#perc + 1) * $fontsize) / 2));
     my $pos = $top - 1;
     $cnt = 0;
     foreach my $nbr (0 .. $#perc) {
-      $self->shadeRect($left+1, $pos, $left+1+$colorblocksize, 
-                       $pos-$colorblocksize, $clr[$cnt++]);    
-      $self->addRawText($rLabels->[$nbr], $left+$colorblocksize+3, 
-                        $pos-$colorblocksize); 
+      $self->shadeRect($left+1, $pos, $left+1+$colorblocksize,
+                       $pos-$colorblocksize, $clr[$cnt++]);
+      $self->addRawText($rLabels->[$nbr], $left+$colorblocksize+3,
+                        $pos-$colorblocksize);
       $pos-=$fontsize;
-    } 
-  } 
+    }
+  }
 }
 
 sub getcolors {
-  my @cols=qw( 
-        red yellow blue green aqua bisque black  
-        blueviolet brown burlywood cadetblue chartreuse 
-        chocolate coral cornflowerblue cornsilk crimson 
-        cyan darkblue darkcyan darkgoldenrod darkgray 
-        darkgreen darkgrey darkkhaki darkmagenta 
+  my @cols=qw(
+        red yellow blue green aqua bisque black
+        blueviolet brown burlywood cadetblue chartreuse
+        chocolate coral cornflowerblue cornsilk crimson
+        cyan darkblue darkcyan darkgoldenrod darkgray
+        darkgreen darkgrey darkkhaki darkmagenta
         darkolivegreen darkorange darkorchid darkred
         darksalmon darkseagreen darkslateblue darkslategray
-        darkslategrey darkturquoise darkviolet deeppink 
-        deepskyblue dimgrey dodgerblue firebrick 
-        floralwhite forestgreen fuchsia gainsboro ghostwhite 
-        gold goldenrod gray greenyellow 
-        honeydew hotpink indianred indigo ivory khaki 
-        lavender lavenderblush lawngreen lemonchiffon 
-        lightblue lightcoral lightcyan lightgoldenrodyellow 
+        darkslategrey darkturquoise darkviolet deeppink
+        deepskyblue dimgrey dodgerblue firebrick
+        floralwhite forestgreen fuchsia gainsboro ghostwhite
+        gold goldenrod gray greenyellow
+        honeydew hotpink indianred indigo ivory khaki
+        lavender lavenderblush lawngreen lemonchiffon
+        lightblue lightcoral lightcyan lightgoldenrodyellow
         lightgray lightgreen lightgrey lightpink lightsalmon
-        lightseagreen lightskyblue lightslategray 
-        lightslategrey lightsteelblue lightyellow lime 
-        limegreen linen magenta maroon mediumaquamarine 
-        mediumblue mediumorchid mediumpurple mediumseagreen 
-        mediumslateblue mediumspringgreen mediumturquoise 
-        mediumvioletred midnightblue mintcream mistyrose 
-        moccasin navajowhite navy oldlace olivedrab 
-        orange orangered orchid palegoldenrod palegreen 
-        paleturquoise palevioletred papayawhip peachpuff 
-        peru pink plum powderblue purple rosybrown 
-        royalblue saddlebrown salmon sandybrown seagreen 
-        seashell sienna silver skyblue slateblue slategray 
-        slategrey snow springgreen steelblue tan teal 
-        thistle tomato turquoise violet wheat white 
+        lightseagreen lightskyblue lightslategray
+        lightslategrey lightsteelblue lightyellow lime
+        limegreen linen magenta maroon mediumaquamarine
+        mediumblue mediumorchid mediumpurple mediumseagreen
+        mediumslateblue mediumspringgreen mediumturquoise
+        mediumvioletred midnightblue mintcream mistyrose
+        moccasin navajowhite navy oldlace olivedrab
+        orange orangered orchid palegoldenrod palegreen
+        paleturquoise palevioletred papayawhip peachpuff
+        peru pink plum powderblue purple rosybrown
+        royalblue saddlebrown salmon sandybrown seagreen
+        seashell sienna silver skyblue slateblue slategray
+        slategrey snow springgreen steelblue tan teal
+        thistle tomato turquoise violet wheat white
         whitesmoke yellowgreen);
 
   return @cols;
 }
 
-=item $pdf->drawBarcode($x, $y, $scale, $frame, $type, $code, $extn, $umzn, 
+=item $pdf->drawBarcode($x, $y, $scale, $frame, $type, $code, $extn, $umzn,
                         $lmzn, $zone, $quzn, $spcr, $ofwt, $fnsz, $text);
 
-This is really not that complicated, trust me! ;) I am pretty unfamiliar with 
-barcode lingo and types so if I get any of this wrong, lemme know! 
-This is a very flexible way to draw a barcode on your PDF document.  
-$x and $y represent the center of the barcode's position on the document.  
-$scale is the size of the entire barcode 1 being 1:1, which is all you'll 
-need most likely.  $type is the type of barcode which can be codabar, 2of5int, 
-3of9, code128, or ean13.  $code is the alpha-numeric code which the barcode 
-will represent.  $extn is the 
-extension to the $code, where applicable.  $umzn is the upper mending zone and 
-$lmzn is the lower mending zone. $zone is the the zone or height of the bars. 
+This is really not that complicated, trust me! ;) I am pretty unfamiliar with
+barcode lingo and types so if I get any of this wrong, lemme know!
+This is a very flexible way to draw a barcode on your PDF document.
+$x and $y represent the center of the barcode's position on the document.
+$scale is the size of the entire barcode 1 being 1:1, which is all you'll
+need most likely.  $type is the type of barcode which can be codabar, 2of5int,
+3of9, code128, or ean13.  $code is the alpha-numeric code which the barcode
+will represent.  $extn is the
+extension to the $code, where applicable.  $umzn is the upper mending zone and
+$lmzn is the lower mending zone. $zone is the the zone or height of the bars.
 $quzn is the quiet zone or the space between the frame and the barcode.  $spcr
-is what to put between each number/character in the text.  $ofwt is the 
-overflow width.  $fnsz is the fontsize used for the text.  $text is optional 
-text beneathe the barcode. 
+is what to put between each number/character in the text.  $ofwt is the
+overflow width.  $fnsz is the fontsize used for the text.  $text is optional
+text beneathe the barcode.
 
 =cut
 
@@ -893,12 +892,12 @@ sub drawBarcode {
   my $zone = shift; # height of the bars
   my $quzn = shift; # zone between barcode and frame
   my $spcr = shift; # space between numbers
-  my $ofwt = shift; # overflow 
+  my $ofwt = shift; # overflow
   my $fnsz = shift; # fontsize
   my $text = shift; # alt text
 
   my $page = $self->{page};
-  my $gfx  = $page->gfx;  
+  my $gfx  = $page->gfx;
 
   my $bSub = "xo_$type";
   my $bar = $self->{pdf}->$bSub(
@@ -959,7 +958,7 @@ sub getFont {
   return $self->{fontname};
 }
 
-=item $pdf->setSize($size); 
+=item $pdf->setSize($size);
 
 Sets the fontsize to $size.  Called before setFont().
 
@@ -993,7 +992,7 @@ sub pages {
 
 =item $pdf->setInfo(%infohash);
 
-Sets the info structure of the document.  Valid keys for %infohash: 
+Sets the info structure of the document.  Valid keys for %infohash:
 Creator, Producer, CreationDate, Title, Subject, Author, etc.
 
 =cut
@@ -1003,9 +1002,10 @@ sub setInfo {
 
   # Over-ride or define %INFO values
   foreach my $key (keys %{$self->{INFO}}) {
-    if (length($info{$key}) and ($info{$key} ne ${$self->{INFO}}{$key})) {
-      ${$self->{INFO}}{$key} = $info{$key};
-    } 
+      next unless (exists($info{$key}) && defined($info{$key}));
+      if (length($info{$key}) and ($info{$key} ne ${$self->{INFO}}{$key})) {
+          ${$self->{INFO}}{$key} = $info{$key};
+      }
   }
   my @orig_keys = keys(%{$self->{INFO}});
   foreach my $key (keys %info) {
@@ -1056,7 +1056,7 @@ sub saveAs {
 =item print $pdf->Finish(\&callback());
 
 Returns the PDF document as text.  Pass your own custom routine to do things
-on the footer of the page.  Pass 'roman' for Roman Numeral page numbering. 
+on the footer of the page.  Pass 'roman' for Roman Numeral page numbering.
 
 =cut
 
@@ -1077,7 +1077,7 @@ sub Finish {
   # Call the callback if one was given to us
   if (ref($callback) eq 'CODE') {
     &$callback($self, $total);
-  # This will print a footer if no $callback is passed for backwards 
+  # This will print a footer if no $callback is passed for backwards
   # compatibility
   } elsif (defined $callback && $callback !~ /none/i) {
     &gen_page_footer($self, $total, $callback);
