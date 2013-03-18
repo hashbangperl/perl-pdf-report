@@ -14,4 +14,11 @@ WriteMakefile(
     },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean               => { FILES => 'PDF-Report-*' },
+     META_MERGE => {
+     resources => {
+       repository => 'https://github.com/hashbangperl/perl-pdf-report',
+    },
+   },
+   ($ExtUtils::MakeMaker::VERSION >= 6.3002 ? ('LICENSE'  => 'perl', ) : ()),
+
 );

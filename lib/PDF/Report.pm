@@ -1132,8 +1132,70 @@ sub gen_page_footer {
 
 ### END PRIVATE SUBS ##########################################################
 
-=head1 AUTHOR
+=head1 AUTHOR EMERITUS
 
 Andrew Orr
+
+=head1 MAINTAINER
+
+Aaron TEEJAY Trevena
+
+=head1 BUGS
+
+Please report any bugs or feature requests to C<bug-calendar-model at rt.cpan.org>, or through
+the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=PDF-Report>.  I will be notified, and then you'll
+automatically be notified of progress on your bug as I make changes.
+
+=head1 SUPPORT
+
+You can find documentation for this module with the perldoc command.
+
+    perldoc PDF::Report
+
+
+You can also look for information at:
+
+=over 4
+
+=item * RT: CPAN's request tracker (report bugs here)
+
+L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=PDF-Report>
+
+=item * AnnoCPAN: Annotated CPAN documentation
+
+L<http://annocpan.org/dist/PDF-Report>
+
+=item * CPAN Ratings
+
+L<http://cpanratings.perl.org/d/PDF-Report>
+
+=item * Search CPAN
+
+L<http://search.cpan.org/dist/PDF-Report/>
+
+=back
+
+=head1 SEE ALSO
+
+=over 4
+
+=item PDF::API2
+
+=back
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright 2008-2010 Andy Orr
+
+Copyright 2013 Aaron Trevena
+
+This program is free software; you can redistribute it and/or modify it
+under the terms of either: the GNU General Public License as published
+by the Free Software Foundation; or the Artistic License.
+
+See L<http://dev.perl.org/licenses/> for more information.
+
+=cut
+
 
 =cut
