@@ -983,7 +983,12 @@ sub getSize {
   return $self->{size};
 }
 
-# the number of pages
+=item $pages = $pdf->pages();
+
+The number of pages in the document.
+
+=cut
+
 sub pages {
   my $self = shift;
 
