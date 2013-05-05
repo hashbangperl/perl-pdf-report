@@ -57,9 +57,9 @@ my @parameterlist=qw(
 
 =head1 METHODS
 
-=over 4
+=head2 new
 
-=item my $pdf = new PDF::Report(%opts);
+my $pdf = new PDF::Report(%opts);
 
 	Creates a new pdf report object.
         If no %opts are specified the module
@@ -177,7 +177,9 @@ sub new {
   return $self;
 }
 
-=item $pdf->newpage($nopage);
+=head2 newpage
+
+$pdf->newpage($nopage);
 
 Creates a new blank page.  Pass $nopage = 1 to toggle page numbering.
 
@@ -199,7 +201,9 @@ sub newpage {
   return(0);
 }
 
-=item $pdf->openpage($index);
+=head2 openpage
+
+$pdf->openpage($index);
 
 If no index is specified, this will open the last page of the document.
 
@@ -218,6 +222,12 @@ sub openpage {
   $self->{page} = $self->{pdf}->openpage($index);
 }
 
+=head2 importpage
+
+Import page from another PDF document, see PDF::API2
+
+=cut
+
 sub importpage {
   my $self = shift;
   my $sourcepdf = shift;
@@ -230,6 +240,13 @@ sub importpage {
                                            $targetindex);
 }
 
+=head2 clonepage
+
+Clone page within document, see PDF::API2
+
+=cut
+
+
 sub clonepage {
   my $self = shift;
   my $sourceindex = shift;
@@ -239,7 +256,9 @@ sub clonepage {
 
 }
 
-=item ($pagewidth, $pageheight) = $pdf->getPageDimensions();
+=head2 getPageDimensions
+
+($pagewidth, $pageheight) = $pdf->getPageDimensions();
 
 Returns the width and height of the page according to what page size chosen
 in "new".
@@ -252,7 +271,9 @@ sub getPageDimensions {
    return($self->{PageWidth}, $self->{PageHeight});
 }
 
-=item $pdf->addRawText($text, $x, $y, $color, $underline, $indent, $rotate);
+=head2 addRawText
+
+$pdf->addRawText($text, $x, $y, $color, $underline, $indent, $rotate);
 
 Add $text at position $x, $y with $color, $underline, $indent and/or $rotate.
 
@@ -305,9 +326,9 @@ B<To use a fixed width string with more than one space between words, you can do
       return $new;
     }
 
-=cut
+=head2 setAddTextPos
 
-=item $pdf->setAddTextPos($hPos, $vPos);
+$pdf->setAddTextPos($hPos, $vPos);
 
 Set the position on the page.  Used by the addText function.
 
@@ -319,7 +340,9 @@ sub setAddTextPos {
   $self->{vPos}=$vPos;
 }
 
-=item ($hPos, $vPos) = $pdf->getAddTextPos();
+=head2 getAddTextPos
+
+($hPos, $vPos) = $pdf->getAddTextPos();
 
 Return the (x, y) value of the text position.
 
@@ -330,7 +353,9 @@ sub getAddTextPos {
   return($self->{hPos}, $self->{vPos});
 }
 
-=item $pdf->setAlign($align);
+=head2 setAlign
+
+$pdf->setAlign($align);
 
 Set the justification of the text.  Used by the addText function.
 
@@ -346,7 +371,9 @@ sub setAlign {
   }
 }
 
-=item $align = $pdf->getAlign();
+=item getAlign
+
+$align = $pdf->getAlign();
 
 Returns the text justification.
 
@@ -357,7 +384,9 @@ sub getAlign {
   return($self->{align});
 }
 
-=item $newtext = $pdf->wrapText($text, $width);
+=head2 wrapText
+
+$newtext = $pdf->wrapText($text, $width);
 
 This is a helper function called by addText, which can be called by itself.
 wrapText() wraps $text within $width.
@@ -398,7 +427,9 @@ sub wrapText {
   return $newText;
 }
 
-=item $pdf->addText($text, $hPos, $textWidth, $textHeight);
+=head2 addText
+
+$pdf->addText($text, $hPos, $textWidth, $textHeight);
 
 Takes $text and prints it to the current page at $hPos.  You may just want
 to pass this function $text if the text is "pre-wrapped" and setAddTextPos
@@ -492,7 +523,9 @@ sub addText {
   }
 }
 
-=item $pdf->addParagraph($text, $hPos, $vPos, $width, $height, $indent, $lead);
+=head2 addParagraph
+
+$pdf->addParagraph($text, $hPos, $vPos, $width, $height, $indent, $lead);
 
 Add $text at ($hPos, $vPos) within $width and $height, with $indent.
 $indent is the number of spaces at the beginning of the first line.
@@ -523,7 +556,9 @@ sub addParagragh {
   $self->addParagraph($text, $hPos, $vPos, $width, $height, $indent, $lead);
 }
 
-=item $pdf->centerString($a, $b, $yPos, $text);
+=head2 centerString
+
+$pdf->centerString($a, $b, $yPos, $text);
 
 Centers $text between points $a and $b at position $yPos.  Be careful how much
 text you try to jam between those points, this function shrinks the text till
@@ -531,7 +566,7 @@ it fits!
 
 =cut
 
-sub centerString {  ### CENTERS STRING BETWEEN TWO POINTS
+sub centerString {
   my $self = shift;
   my $PointBegin = shift;
   my $PointEnd = shift;
@@ -553,6 +588,10 @@ sub centerString {  ### CENTERS STRING BETWEEN TWO POINTS
   $self->setSize($OldTextSize);
 }
 
+=head2 setRowHeight
+
+=cut
+
 sub setRowHeight {
   my $self = shift;
   my $size = shift; # the fontsize
@@ -560,7 +599,9 @@ sub setRowHeight {
   return (int($size * 1.20));
 }
 
-=item $pdf->getStringWidth($String);
+=head2 getStringWidth
+
+$pdf->getStringWidth($String);
 
 Returns the width of $String according to the current font and fontsize being
 used.
@@ -577,7 +618,9 @@ sub getStringWidth {
   return $txt->advancewidth($String);
 }
 
-=item $pdf->addImg($file, $x, $y);
+=head2 addImg
+
+$pdf->addImg($file, $x, $y);
 
 Add image $file to the current page at position ($x, $y).
 
@@ -589,7 +632,9 @@ sub addImg {
   $self->addImgScaled($file, $x, $y, 1);
 }
 
-=item $pdf->addImgScaled($file, $x, $y, $scale);
+=head2 addImgScaled
+
+$pdf->addImgScaled($file, $x, $y, $scale);
 
 Add image $file to the current page at position ($x, $y) scaled to $scale.
 
@@ -617,7 +662,9 @@ sub addImgScaled {
   $gfx->image($img, $x, $y, $scale);
 }
 
-=item $pdf->setGfxLineWidth($width);
+=head2 setGfxLineWidth
+
+$pdf->setGfxLineWidth($width);
 
 Set the line width drawn on the page.
 
@@ -629,7 +676,9 @@ sub setGfxLineWidth {
   $self->{linewidth} = $width;
 }
 
-=item $width = $pdf->getGfxLineWidth();
+=head2 getGfxLineWidth
+
+$width = $pdf->getGfxLineWidth();
 
 Returns the current line width.
 
@@ -641,7 +690,9 @@ sub getGfxLineWidth {
   return $self->{linewidth};
 }
 
-=item $pdf->drawLine($x1, $y1, $x2, $y2);
+=head2 drawLine
+
+$pdf->drawLine($x1, $y1, $x2, $y2);
 
 Draw a line on the current page starting at ($x1, $y1) and ending
 at ($x2, $y2).
@@ -658,7 +709,9 @@ sub drawLine {
   $gfx->stroke;
 }
 
-=item $pdf->drawRect($x1, $y1, $x2, $y2);
+=head2 drawRect
+
+$pdf->drawRect($x1, $y1, $x2, $y2);
 
 Draw a rectangle on the current page.  Top left corner is represented by
 ($x1, $y1) and the bottom right corner is ($x2, $y2).
@@ -674,12 +727,14 @@ sub drawRect {
   $gfx->stroke;
 }
 
-=item $pdf->shadeRect($x1, $y1, $x2, $y2, $color);
+=head2 shadeRect
+
+$pdf->shadeRect($x1, $y1, $x2, $y2, $color);
 
 Shade a rectangle with $color.  Top left corner is ($x1, $y1) and the bottom
 right corner is ($x2, $y2).
 
-=cut
+=over 4
 
 =item B<Defined color-names are:>
 
@@ -727,6 +782,8 @@ and additionally the hsv-hex-notation:
 
         !hsv, !hhssvv, !hhhsssvvv and !hhhhssssvvvv
 
+=back
+
 =cut
 
 sub shadeRect {
@@ -739,7 +796,9 @@ sub shadeRect {
   $gfx->fill;
 }
 
-=item $pdf->drawPieGraph($x, $y, $size, $rData, $rLabels);
+=head2 drawPieGraph
+
+$pdf->drawPieGraph($x, $y, $size, $rData, $rLabels);
 
 Method to create a piegraph using a reference to an array of values.
 It also takes a reference to an array for labels for each data value.  A
@@ -822,6 +881,12 @@ sub drawPieGraph {
   }
 }
 
+=head2 getcolors
+
+Returns list of available colours
+
+=cut
+
 sub getcolors {
   my @cols=qw(
         red yellow blue green aqua bisque black
@@ -858,7 +923,9 @@ sub getcolors {
   return @cols;
 }
 
-=item $pdf->drawBarcode($x, $y, $scale, $frame, $type, $code, $extn, $umzn,
+=head2 drawBarcode
+
+$pdf->drawBarcode($x, $y, $scale, $frame, $type, $code, $extn, $umzn,
                         $lmzn, $zone, $quzn, $spcr, $ofwt, $fnsz, $text);
 
 This is really not that complicated, trust me! ;) I am pretty unfamiliar with
@@ -927,7 +994,9 @@ sub drawBarcode {
   $gfx->restore;
 }
 
-=item $pdf->setFont($font);
+=head2 setFont
+
+$pdf->setFont($font);
 
 Creates a new font object of type $font to be used in the page.
 
@@ -947,7 +1016,9 @@ sub setFont {
   $self->{fontname} = $font;
 }
 
-=item $fontname = $pdf->getFont();
+=head2 getFont
+
+$fontname = $pdf->getFont();
 
 Returns the font name currently being used.
 
@@ -959,20 +1030,23 @@ sub getFont {
   return $self->{fontname};
 }
 
-=item $pdf->setSize($size);
+=head2 setSize
+
+$pdf->setSize($size);
 
 Sets the fontsize to $size.  Called before setFont().
 
 =cut
 
-# sets the font size
 sub setSize {
   my ( $self, $size ) = @_;
 
   $self->{size} = $size;
 }
 
-=item $fontsize = $pdf->getSize();
+=head2 getSize
+
+$fontsize = $pdf->getSize();
 
 Returns the font size currently being used.
 
@@ -984,7 +1058,9 @@ sub getSize {
   return $self->{size};
 }
 
-=item $pages = $pdf->pages();
+=head2 pages
+
+$pages = $pdf->pages();
 
 The number of pages in the document.
 
@@ -996,7 +1072,9 @@ sub pages {
   return $self->{pdf}->pages;
 }
 
-=item $pdf->setInfo(%infohash);
+=head2 setInfo
+
+$pdf->setInfo(%infohash);
 
 Sets the info structure of the document.  Valid keys for %infohash:
 Creator, Producer, CreationDate, Title, Subject, Author, etc.
@@ -1021,7 +1099,9 @@ sub setInfo {
   }
 }
 
-=item %infohash = $pdf->getInfo();
+=head2 getInfo
+
+%infohash = $pdf->getInfo();
 
 Gets meta-data from the info structure of the document.
 Valid keys for %infohash: Creator, Producer, CreationDate,
@@ -1036,17 +1116,13 @@ sub getInfo {
   return %info;
 }
 
-=item $pdf->saveAs($fileName);
+=head2 saveAs
 
 Saves the document to a file.
 
-=cut
-
-=item B<Example:>
-
-       # Save the document as "file.pdf"
-        my $fileName = "file.pdf";
-       $pdf->saveAs($fileName);
+  # Save the document as "file.pdf"
+  my $fileName = "file.pdf";
+  $pdf->saveAs($fileName);
 
 =cut
 
@@ -1059,14 +1135,10 @@ sub saveAs {
   $self->{pdf}->end();
 }
 
-=item print $pdf->Finish(\&callback());
+=head2 Finish
 
 Returns the PDF document as text.  Pass your own custom routine to do things
 on the footer of the page.  Pass 'roman' for Roman Numeral page numbering.
-
-=cut
-
-=item B<Example:>
 
 	# Hand the document to the web browser
 	print "Content-type: application/pdf\n\n";
@@ -1106,13 +1178,10 @@ sub getPDFAPI2Object {
     return $self->{pdf};
 }
 
-### END GLOBAL SUBS ###########################################################
-
-=back
-
 =cut
 
 ### PRIVATE SUBS ##############################################################
+
 sub gen_page_footer {
   my $self = shift;
   my $total = shift;
@@ -1142,8 +1211,6 @@ sub gen_page_footer {
     $txtobj->text($DATE);
   }
 }
-
-### END PRIVATE SUBS ##########################################################
 
 =head1 AUTHOR EMERITUS
 
@@ -1182,9 +1249,13 @@ L<http://annocpan.org/dist/PDF-Report>
 
 L<http://cpanratings.perl.org/d/PDF-Report>
 
-=item * Search CPAN
+=item *  METACPAN
 
-L<http://search.cpan.org/dist/PDF-Report/>
+L<https://metacpan.org/module/PDF::Report/>
+
+=item * GITHUB
+
+L<https://github.com/hashbangperl/perl-pdf-report>
 
 =back
 
