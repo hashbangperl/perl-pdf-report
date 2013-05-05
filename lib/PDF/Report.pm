@@ -371,7 +371,7 @@ sub setAlign {
   }
 }
 
-=item getAlign
+=head2 getAlign
 
 $align = $pdf->getAlign();
 
@@ -1178,8 +1178,6 @@ sub getPDFAPI2Object {
     return $self->{pdf};
 }
 
-=cut
-
 ### PRIVATE SUBS ##############################################################
 
 sub gen_page_footer {
@@ -1278,8 +1276,5 @@ under the terms of either: the GNU General Public License as published
 by the Free Software Foundation; or the Artistic License.
 
 See L<http://dev.perl.org/licenses/> for more information.
-
-=cut
-
 
 =cut
