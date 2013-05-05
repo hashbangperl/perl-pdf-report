@@ -17,6 +17,7 @@ This is a wrapper for Alfred Reibenschuh's PDF::API2
 Defines methods to create PDF reports
 
 =head1 VERSION
+
  1.34
 
 =cut
@@ -1093,6 +1094,18 @@ sub Finish {
 
   return $out;
 }
+
+=head2 getPDFAPI2Object
+
+Object method returns underlying PDF::API2 object
+
+=cut
+
+sub getPDFAPI2Object {
+    my $self = shift;
+    return $self->{pdf};
+}
+
 ### END GLOBAL SUBS ###########################################################
 
 =back
