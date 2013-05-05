@@ -1,6 +1,6 @@
 Revision history for Perl extension PDF::Report.
 
-1.34  
+1.34  Sub May 5 2013 
   - fixed bug 58200 uninitialized value warning when calling SetInfo
   - applied patch for bug 58201 by Sean Robinson
 
