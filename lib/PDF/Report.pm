@@ -18,11 +18,11 @@ Defines methods to create PDF reports
 
 =head1 VERSION
 
- 1.34
+ 1.35
 
 =cut
 
-our $VERSION = "1.34";
+our $VERSION = "1.35";
 
 use strict;
 use PDF::API2;
@@ -38,9 +38,6 @@ $DEFAULTS{marginX}=30;
 $DEFAULTS{marginY}=30;
 $DEFAULTS{font}="Helvetica";
 $DEFAULTS{size}=12;
-
-my ( $day, $month, $year )= ( localtime( time ) )[3..5];
-my $DATE=sprintf "%02d/%02d/%04d", ++$month, $day, 1900 + $year;
 
 # Document info
 my @parameterlist=qw(
@@ -119,6 +116,8 @@ sub new {
 
   my $MARGINX = $DEFAULTS{marginX};
   my $MARGINY = $DEFAULTS{marginY};
+  my ( $day, $month, $year )= ( localtime( time ) )[3..5];
+  my $DATE=sprintf "%02d/%02d/%04d", ++$month, $day, 1900 + $year;
 
   # May not need alot of these, will review later
   my $self= { #pdf          => PDF::API2->new(),
@@ -154,6 +153,7 @@ sub new {
               # Cache for font object caching -- used by setFont() ###
               ########################################################
               __font_cache => {},
+            DATE => $DATE,
             };
 
   if (defined $defaults{File} && length($defaults{File})) {
@@ -653,7 +653,7 @@ sub addImgScaled {
   );
 
   $file =~ /\.(\w+)$/;
-  my $ext = $1;
+  my $ext = lc($1);
 
   my $sub = "image_$type{$ext}";
   my $img = $self->{pdf}->$sub($file);
@@ -1204,9 +1204,9 @@ sub gen_page_footer {
     $txtobj->font($font, $size);
     $txtobj->translate($self->{Xmargin}, 8);
     $txtobj->text($txt);
-    $size = $self->getStringWidth($DATE);
+    $size = $self->getStringWidth($self->{DATE});
     $txtobj->translate($self->{PageWidth} - $self->{Xmargin} - $size, 8);
-    $txtobj->text($DATE);
+    $txtobj->text($self->{DATE});
   }
 }
 
